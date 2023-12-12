@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.hhj.fileproject.web;
+package com.hhj.fileproject.mvc.web;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

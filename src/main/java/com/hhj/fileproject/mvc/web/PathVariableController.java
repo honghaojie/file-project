@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.hhj.fileproject.web;
+package com.hhj.fileproject.mvc.web;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
