@@ -1,17 +1,20 @@
 package com.hhj.fileproject.service.impl;
 
 import com.hhj.fileproject.constant.FileConstant;
-import com.hhj.fileproject.mvc.web.FileController;
 import com.hhj.fileproject.param.LocalParam;
 import com.hhj.fileproject.service.LocalStorageService;
-import com.hhj.fileproject.utils.CommonUtil;
+import com.hhj.fileproject.service.StreamConversionService;
+import com.hhj.fileproject.util.HttpUtil;
+import com.hhj.fileproject.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
@@ -26,6 +29,13 @@ import java.util.Optional;
 @Service
 public class LocalStorageServiceImpl implements LocalStorageService {
     private static final Logger logger = LoggerFactory.getLogger(LocalStorageServiceImpl.class);
+    
+    @Autowired
+    private HttpUtil httpUtil;
+
+    @Autowired
+    private StreamConversionService streamConversionService;
+    
     @Override
     public String saveFile(LocalParam localParam) {
             /*    URL resource = this.getClass().getClassLoader().getResource("../../");
@@ -71,6 +81,26 @@ public class LocalStorageServiceImpl implements LocalStorageService {
             logger.error("download file failed",e);
         }
        return null;
+    }
+
+    @Override
+    public void downloadFile(HttpServletRequest request, HttpServletResponse response, InputStream inputStream) {
+     /*   String contentDisposition = response.getHeader("Content-Disposition");
+        if (StringUtils.isNotBlank(contentDispositioZn)) {
+            *//*contentDisposition = CommonUtil.base64Decode(contentDisposition);
+            response.setHeader("Content-Disposition", contentDisposition);*//*
+            response.setHeader("Content-Disposition", "attachment;filename=test.txt");
+        }*/
+        response.setHeader("Content-Disposition", "attachment;filename=test.txt");
+        streamConversionService.outFileStream("", inputStream, request, response);
+    }
+
+    @Override
+    public void redirect(HttpServletRequest request, HttpServletResponse response) {
+        HttpServletRequest request1 = httpUtil.getRequest();
+        String type = request.getParameter("type");
+        ResponseUtil.redirectUrl(response,"https://www.baidu.com");
+
     }
 
     private Path createDirectory(Path path) {

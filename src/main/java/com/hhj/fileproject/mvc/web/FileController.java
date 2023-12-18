@@ -2,9 +2,6 @@ package com.hhj.fileproject.mvc.web;
 
 import com.hhj.fileproject.param.LocalParam;
 import com.hhj.fileproject.service.LocalStorageService;
-import com.hhj.fileproject.service.StreamConversionService;
-import com.hhj.fileproject.util.CommonUtil;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,8 +29,7 @@ public class FileController {
     @Autowired
     private  LocalStorageService localStorageService;
 
-    @Autowired
-    private StreamConversionService streamConversionService;
+
 
 
     @PostMapping("/saveFile")
@@ -43,27 +39,24 @@ public class FileController {
     }
 
     @GetMapping("/download")
-    public ResponseEntity<?> download(HttpServletResponse response, HttpServletRequest request) {
+    public ResponseEntity<?> download(HttpServletRequest request,HttpServletResponse response) {
         try (InputStream inputStream =localStorageService.getFile()) {
             response.setContentType("application/octet-stream");
-            downloadFile(request, response, inputStream);
+            localStorageService.downloadFile(request, response, inputStream);
         } catch (Exception e) {
 
         }
         return ResponseEntity.ok("ok");
-
     }
 
-    private void downloadFile(HttpServletRequest request, HttpServletResponse response, InputStream inputStream) {
-     /*   String contentDisposition = response.getHeader("Content-Disposition");
-        if (StringUtils.isNotBlank(contentDisposition)) {
-            *//*contentDisposition = CommonUtil.base64Decode(contentDisposition);
-            response.setHeader("Content-Disposition", contentDisposition);*//*
-            response.setHeader("Content-Disposition", "attachment;filename=test.txt");
-        }*/
-        response.setHeader("Content-Disposition", "attachment;filename=test.txt");
-        streamConversionService.outFileStream("", inputStream, request, response);
+
+    @GetMapping("/redirect")
+    public ResponseEntity<?> redirect(HttpServletRequest request,HttpServletResponse response){
+        localStorageService.redirect(request,response);
+        return  ResponseEntity.ok("ok");
     }
+
+
 
 
 }
